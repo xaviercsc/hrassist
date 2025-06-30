@@ -1,3 +1,7 @@
 to setup password for test users :
+python -m venv myenv
+source myenv/bin/activate
+pip install -r requirements.txt
+
 run >>> python generate_keys.py
 streamlit run hr_assist.py
