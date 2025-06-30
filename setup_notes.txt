@@ -1,0 +1,2 @@
+to setup password for test users :
+run >>> python generate_keys.py
