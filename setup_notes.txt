@@ -1,4 +1,5 @@
 to setup password for test users :
+cd hrassist
 python -m venv myenv
 source myenv/bin/activate
 pip install -r requirements.txt
