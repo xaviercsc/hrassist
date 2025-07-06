@@ -3,12 +3,8 @@
 import streamlit as st
 import sqlite3
 import os
-from pathlib import Path
 
 DB_PATH = "data/users.db"
-UPLOAD_DIR = "data/uploads"
-TEMPLATE_PATH = Path("templates/cv_template.docx")  # Fixed path for Streamlit Cloud
-os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 # -----------------------------
 # DATABASE CONNECTION
@@ -26,7 +22,16 @@ def init_application_table():
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         candidate TEXT,
         job_id INTEGER,
-        resume_path TEXT,
+        full_name TEXT,
+        email TEXT,
+        phone TEXT,
+        linkedin TEXT,
+        github TEXT,
+        objective TEXT,
+        skills TEXT,
+        experience TEXT,
+        education TEXT,
+        certifications TEXT,
         status TEXT DEFAULT 'Submitted'
     )''')
     conn.commit()
@@ -43,11 +48,19 @@ def get_all_jobs():
     conn.close()
     return jobs
 
-def apply_to_job(candidate, job_id, resume_path):
+def apply_to_job(candidate, job_id, data):
     conn = get_db_connection()
     c = conn.cursor()
-    c.execute("INSERT INTO applications (candidate, job_id, resume_path) VALUES (?, ?, ?)",
-              (candidate, job_id, resume_path))
+    c.execute("""
+        INSERT INTO applications (
+            candidate, job_id, full_name, email, phone, linkedin, github,
+            objective, skills, experience, education, certifications
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (
+        candidate, job_id, data["full_name"], data["email"], data["phone"],
+        data["linkedin"], data["github"], data["objective"], data["skills"],
+        data["experience"], data["education"], data["certifications"]
+    ))
     conn.commit()
     conn.close()
 
@@ -65,31 +78,29 @@ def get_candidate_applications(candidate):
 def candidate_dashboard():
     st.header("🔍 Browse Jobs and Apply")
 
-    # Download CV template
-    st.subheader("📄 Download CV Template")
-    if TEMPLATE_PATH.exists():
-        with open(TEMPLATE_PATH, "rb") as f:
-            st.download_button(label="Download CV Template (.docx)", data=f, file_name="cv_template.docx")
-    else:
-        st.warning("CV template not found at: " + str(TEMPLATE_PATH))
-
-    # Browse jobs and apply
     jobs = get_all_jobs()
     for job in jobs:
         with st.expander(f"{job[1]}"):
             st.write(job[2])
             with st.form(f"apply_form_{job[0]}"):
-                resume = st.file_uploader("Upload your resume (docx)", type=["docx"], key=f"resume_{job[0]}")
+                data = {}
+                data["full_name"] = st.text_input("Full Name")
+                data["email"] = st.text_input("Email")
+                data["phone"] = st.text_input("Phone")
+                data["linkedin"] = st.text_input("LinkedIn")
+                data["github"] = st.text_input("GitHub/Portfolio")
+                data["objective"] = st.text_area("Objective (2-3 lines)")
+                data["skills"] = st.text_area("Skills (comma-separated or list)")
+                data["experience"] = st.text_area("Experience")
+                data["education"] = st.text_area("Education")
+                data["certifications"] = st.text_area("Certifications")
                 submitted = st.form_submit_button("Apply")
                 if submitted:
-                    if resume:
-                        file_path = os.path.join(UPLOAD_DIR, f"{st.session_state.username}_{job[0]}.docx")
-                        with open(file_path, "wb") as f:
-                            f.write(resume.read())
-                        apply_to_job(st.session_state.username, job[0], file_path)
+                    if data["full_name"] and data["email"]:
+                        apply_to_job(st.session_state.username, job[0], data)
                         st.success("Application submitted!")
                     else:
-                        st.error("Please upload your resume.")
+                        st.error("Full name and email are required.")
 
     st.subheader("📥 Your Applications")
     apps = get_candidate_applications(st.session_state.username)
