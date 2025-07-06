@@ -7,7 +7,7 @@ from pathlib import Path
 
 DB_PATH = "data/users.db"
 UPLOAD_DIR = "data/uploads"
-TEMPLATE_PATH = "templates/cv_template.docx"
+TEMPLATE_PATH = Path(__file__).resolve().parent.parent / "templates/cv_template.docx"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 # -----------------------------
@@ -67,11 +67,11 @@ def candidate_dashboard():
 
     # Download CV template
     st.subheader("📄 Download CV Template")
-    if Path(TEMPLATE_PATH).exists():
+    if TEMPLATE_PATH.exists():
         with open(TEMPLATE_PATH, "rb") as f:
             st.download_button(label="Download CV Template (.docx)", data=f, file_name="cv_template.docx")
     else:
-        st.warning("CV template not found.")
+        st.warning("CV template not found at: " + str(TEMPLATE_PATH))
 
     # Browse jobs and apply
     jobs = get_all_jobs()
