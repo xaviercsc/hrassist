@@ -3,7 +3,6 @@
 import streamlit as st
 import sqlite3
 import os
-from utils.cv_parser import parse_docx_resume
 from utils.chatgpt import get_profile_match_percentage, generate_interview_questions
 from utils.email_sender import send_email
 from datetime import datetime
