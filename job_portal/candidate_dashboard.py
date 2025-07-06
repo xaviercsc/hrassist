@@ -3,9 +3,11 @@
 import streamlit as st
 import sqlite3
 import os
+from pathlib import Path
 
 DB_PATH = "data/users.db"
 UPLOAD_DIR = "data/uploads"
+TEMPLATE_PATH = "templates/cv_template.docx"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 # -----------------------------
@@ -63,6 +65,15 @@ def get_candidate_applications(candidate):
 def candidate_dashboard():
     st.header("🔍 Browse Jobs and Apply")
 
+    # Download CV template
+    st.subheader("📄 Download CV Template")
+    if Path(TEMPLATE_PATH).exists():
+        with open(TEMPLATE_PATH, "rb") as f:
+            st.download_button(label="Download CV Template (.docx)", data=f, file_name="cv_template.docx")
+    else:
+        st.warning("CV template not found.")
+
+    # Browse jobs and apply
     jobs = get_all_jobs()
     for job in jobs:
         with st.expander(f"{job[1]}"):
@@ -84,4 +95,3 @@ def candidate_dashboard():
     apps = get_candidate_applications(st.session_state.username)
     for title, status in apps:
         st.markdown(f"- **{title}** → `{status}`")
-
