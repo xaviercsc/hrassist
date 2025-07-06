@@ -2,6 +2,11 @@
 
 import streamlit as st
 import sqlite3
+import os
+from utils.cv_parser import parse_docx_resume
+from utils.chatgpt import get_profile_match_percentage, generate_interview_questions
+from utils.email_sender import send_email
+from datetime import datetime
 
 DB_PATH = "data/users.db"
 
@@ -12,57 +17,68 @@ def get_db_connection():
     return sqlite3.connect(DB_PATH, check_same_thread=False)
 
 # -----------------------------
-# JOB TABLE SETUP
+# DATABASE FUNCTIONS
 # -----------------------------
-def init_job_table():
+def get_jobs_by_hr(hr_username):
     conn = get_db_connection()
     c = conn.cursor()
-    c.execute('''CREATE TABLE IF NOT EXISTS jobs (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT,
-        description TEXT,
-        posted_by TEXT
-    )''')
-    conn.commit()
-    conn.close()
-
-# -----------------------------
-# JOB POSTING FUNCTIONS
-# -----------------------------
-def post_job(title, description, posted_by):
-    conn = get_db_connection()
-    c = conn.cursor()
-    c.execute("INSERT INTO jobs (title, description, posted_by) VALUES (?, ?, ?)",
-              (title, description, posted_by))
-    conn.commit()
-    conn.close()
-
-def get_jobs_by_hr(username):
-    conn = get_db_connection()
-    c = conn.cursor()
-    c.execute("SELECT title, description FROM jobs WHERE posted_by = ?", (username,))
+    c.execute("SELECT id, title, description FROM jobs WHERE posted_by = ?", (hr_username,))
     jobs = c.fetchall()
     conn.close()
     return jobs
+
+def get_applicants_for_job(job_id):
+    conn = get_db_connection()
+    c = conn.cursor()
+    c.execute("SELECT candidate, resume_path FROM applications WHERE job_id = ?", (job_id,))
+    applicants = c.fetchall()
+    conn.close()
+    return applicants
+
+def update_application_status(candidate, job_id, new_status):
+    conn = get_db_connection()
+    c = conn.cursor()
+    c.execute("UPDATE applications SET status = ? WHERE candidate = ? AND job_id = ?", (new_status, candidate, job_id))
+    conn.commit()
+    conn.close()
 
 # -----------------------------
 # HR DASHBOARD UI
 # -----------------------------
 def hr_dashboard():
-    st.header("📢 HR Dashboard: Post a Job")
+    st.header("📋 HR Dashboard – Your Job Postings")
 
-    title = st.text_input("Job Title")
-    description = st.text_area("Job Description")
-
-    if st.button("Post Job"):
-        if title and description:
-            post_job(title, description, st.session_state.username)
-            st.success("Job posted successfully!")
-        else:
-            st.error("Please fill in all fields.")
-
-    st.subheader("📄 Jobs You Posted")
     jobs = get_jobs_by_hr(st.session_state.username)
-    for job in jobs:
-        st.markdown(f"**{job[0]}**\n\n{job[1]}")
 
+    for job in jobs:
+        with st.expander(f"📌 {job[1]}"):
+            st.write(job[2])
+            st.markdown("**📨 Applicants:**")
+            applicants = get_applicants_for_job(job[0])
+            if not applicants:
+                st.info("No applications yet.")
+            for candidate, resume_path in applicants:
+                with st.container():
+                    st.subheader(f"👤 {candidate}")
+
+                    # Preview resume
+                    profile_text = parse_docx_resume(resume_path)
+                    st.text_area("Resume Preview:", profile_text, height=150)
+
+                    # Match % button
+                    if st.button("🔎 Check Match %", key=f"match_{candidate}_{job[0]}"):
+                        result = get_profile_match_percentage(job[2], profile_text)
+                        st.info(f"Match Result: {result}")
+
+                    # Interview questions
+                    if st.button("🧠 Generate Interview Questions", key=f"questions_{candidate}_{job[0]}"):
+                        questions = generate_interview_questions(job[2], profile_text)
+                        st.text_area("Interview Questions:", questions, height=250, key=f"qbox_{candidate}_{job[0]}")
+
+                        # Schedule interview
+                        interview_date = st.date_input("📅 Select Interview Date", key=f"date_{candidate}_{job[0]}")
+                        if st.button("📤 Confirm and Schedule Interview", key=f"confirm_{candidate}_{job[0]}"):
+                            update_application_status(candidate, job[0], "Interview Scheduled")
+                            send_email(to_email=st.session_state.username, subject="Interview Questions", body=questions)
+                            send_email(to_email=candidate, subject="Interview Scheduled", body=f"You are scheduled for an interview on {interview_date}.")
+                            st.success("Interview confirmed and emails sent.")
