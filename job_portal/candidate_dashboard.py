@@ -7,7 +7,7 @@ from pathlib import Path
 
 DB_PATH = "data/users.db"
 UPLOAD_DIR = "data/uploads"
-TEMPLATE_PATH = Path("templates/cv_template.docx")
+TEMPLATE_PATH = Path("templates/cv_template.docx")  # Fixed path for Streamlit Cloud
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 # -----------------------------
