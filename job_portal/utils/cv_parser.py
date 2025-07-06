@@ -1,6 +1,6 @@
 # cv_parser.py
 
-import docx
+import python-docx
 import os
 
 # -----------------------------
