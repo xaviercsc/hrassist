@@ -53,8 +53,10 @@ def login_view():
         user = login_user(username, password)
         if user:
             st.session_state.logged_in = True
-            st.session_state.username = user[1]
-            st.session_state.role = user[3]
+            conn.row_factory = sqlite3.Row
+            user = c.execute(...).fetchone()
+            st.session_state.username = user["username"]
+            st.session_state.role = user["role"]
             st.success(f"Logged in as {user[3].capitalize()}: {user[1]}")
         else:
             st.error("Invalid credentials")
