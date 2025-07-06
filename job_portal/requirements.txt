@@ -1,6 +1,1 @@
-openai
-python-docx
-smtplib
-email
-sqlite3
-pathlib
+
