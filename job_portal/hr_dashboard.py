@@ -62,7 +62,7 @@ def hr_dashboard():
     with st.expander("➕ Post a New Job"):
         with st.form("job_form"):
             title = st.text_input("Job Title")
-            description = st.text_area("Job Description")
+            description = st.text_area("Job Description", value="")
             submitted = st.form_submit_button("Post Job")
             if submitted:
                 if title and description:
