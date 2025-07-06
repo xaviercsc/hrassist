@@ -7,7 +7,7 @@ from pathlib import Path
 
 DB_PATH = "data/users.db"
 UPLOAD_DIR = "data/uploads"
-TEMPLATE_PATH = Path(__file__).resolve().parent.parent / "templates/cv_template.docx"
+TEMPLATE_PATH = Path("templates/cv_template.docx")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 # -----------------------------
