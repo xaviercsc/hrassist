@@ -1,24 +1,16 @@
 # db.py
 
 import sqlite3
-import os
 
-DB_PATH = "data/users.db"
-
-# -----------------------------
-# DATABASE INITIALIZATION
-# -----------------------------
 def init_db():
-    os.makedirs("data", exist_ok=True)
-    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
+    conn = sqlite3.connect("data/users.db")
     c = conn.cursor()
 
     # Users table
     c.execute('''CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT UNIQUE,
+        username TEXT PRIMARY KEY,
         password TEXT,
-        role TEXT CHECK(role IN ('hr', 'candidate'))
+        role TEXT
     )''')
 
     # Jobs table
@@ -29,21 +21,26 @@ def init_db():
         posted_by TEXT
     )''')
 
-    # Applications table
+    # Applications table (full structure)
     c.execute('''CREATE TABLE IF NOT EXISTS applications (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         candidate TEXT,
         job_id INTEGER,
-        resume_path TEXT,
+        full_name TEXT,
+        email TEXT,
+        phone TEXT,
+        linkedin TEXT,
+        github TEXT,
+        objective TEXT,
+        skills TEXT,
+        experience TEXT,
+        education TEXT,
+        certifications TEXT,
         status TEXT DEFAULT 'Submitted'
     )''')
 
     conn.commit()
     conn.close()
 
-# -----------------------------
-# GET CONNECTION
-# -----------------------------
-def get_db_connection():
-    return sqlite3.connect(DB_PATH, check_same_thread=False)
-
+# Call this once on app startup
+init_db()
