@@ -25,6 +25,13 @@ def get_jobs_by_hr(hr_username):
     conn.close()
     return jobs
 
+def create_job(title, description, posted_by):
+    conn = get_db_connection()
+    c = conn.cursor()
+    c.execute("INSERT INTO jobs (title, description, posted_by) VALUES (?, ?, ?)", (title, description, posted_by))
+    conn.commit()
+    conn.close()
+
 def get_applicants_for_job(job_id):
     conn = get_db_connection()
     c = conn.cursor()
@@ -49,12 +56,27 @@ def update_application_status(candidate, job_id, new_status):
 # HR DASHBOARD UI
 # -----------------------------
 def hr_dashboard():
-    st.header("📋 HR Dashboard – Your Job Postings")
+    st.header("📋 HR Dashboard – Job Management")
 
+    # Job Posting UI
+    with st.expander("➕ Post a New Job"):
+        with st.form("job_form"):
+            title = st.text_input("Job Title")
+            description = st.text_area("Job Description")
+            submitted = st.form_submit_button("Post Job")
+            if submitted:
+                if title and description:
+                    create_job(title, description, st.session_state.username)
+                    st.success("Job posted successfully!")
+                else:
+                    st.error("Please provide both title and description.")
+
+    # Existing Job Postings
+    st.header("📄 Your Job Postings")
     jobs = get_jobs_by_hr(st.session_state.username)
 
     for job in jobs:
-        with st.expander(f"📌 {job[1]}"):
+        with st.expander(f"📌 {job[1]}" ):
             st.write(job[2])
             st.markdown("**📨 Applicants:**")
             applicants = get_applicants_for_job(job[0])
