@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {% if job %}Edit Job{% else %}Create Job{% endif %} - HR Assist AI
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">
+        <i class="fas fa-{% if job %}edit{% else %}plus{% endif %} me-2"></i>{{ title }}
+    </h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{% url 'hr_job_list' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Jobs
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Job Details</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>
+                            {% if job %}Update Job{% else %}Create Job{% endif %}
+                        </button>
+                        <a href="{% url 'hr_job_list' %}" class="btn btn-secondary">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="card-title mb-0">
+                    <i class="fas fa-lightbulb me-2"></i>Tips for Better Job Postings
+                </h6>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        Be specific about required skills
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        Include years of experience needed
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        Mention work location clearly
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        Describe day-to-day responsibilities
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        List required technologies
+                    </li>
+                </ul>
+                
+                <div class="alert alert-info">
+                    <small>
+                        <i class="fas fa-robot me-2"></i>
+                        <strong>AI Tip:</strong> Detailed job descriptions help our AI provide better candidate matching scores.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

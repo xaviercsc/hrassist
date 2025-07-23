@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Home - HR Assist AI{% endblock %}
+
+{% block content %}
+<div class="hero-section bg-primary text-white py-5 mb-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">Welcome to HR Assist AI</h1>
+                <p class="lead mb-4">
+                    Revolutionize your recruitment process with AI-powered candidate matching 
+                    and intelligent interview question generation.
+                </p>
+                <div class="d-flex gap-3">
+                    <a href="{% url 'hr_register' %}" class="btn btn-light btn-lg">
+                        <i class="fas fa-user-tie me-2"></i>Register as HR
+                    </a>
+                    <a href="{% url 'candidate_register' %}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-user me-2"></i>Register as Candidate
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <i class="fas fa-robot display-1 mb-4"></i>
+                <h3>AI-Powered Recruitment</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Features Section -->
+    <div class="row mb-5">
+        <div class="col-12 text-center mb-5">
+            <h2 class="display-5 fw-bold">Key Features</h2>
+            <p class="text-muted">Everything you need for modern recruitment</p>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <i class="fas fa-brain text-primary mb-3" style="font-size: 3rem;"></i>
+                    <h5 class="card-title">AI Candidate Matching</h5>
+                    <p class="card-text">
+                        Our AI analyzes candidate profiles and provides intelligent matching scores 
+                        based on skills, experience, and job requirements.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <i class="fas fa-questions text-success mb-3" style="font-size: 3rem;"></i>
+                    <h5 class="card-title">Smart Interview Questions</h5>
+                    <p class="card-text">
+                        Automatically generate tailored interview questions based on job requirements 
+                        and candidate background for better assessment.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <i class="fas fa-bell text-warning mb-3" style="font-size: 3rem;"></i>
+                    <h5 class="card-title">Real-time Notifications</h5>
+                    <p class="card-text">
+                        Keep candidates informed with instant notifications about application status, 
+                        interviews, and important updates.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Section -->
+    <div class="row mb-5">
+        <div class="col-12 text-center mb-4">
+            <h3>Platform Statistics</h3>
+        </div>
+        
+        <div class="col-md-6 text-center">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="text-primary">{{ total_jobs }}</h2>
+                    <p class="card-text">Active Job Openings</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 text-center">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="text-success">{{ total_applications }}</h2>
+                    <p class="card-text">Total Applications</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works Section -->
+    <div class="row mb-5">
+        <div class="col-12 text-center mb-5">
+            <h2 class="display-5 fw-bold">How It Works</h2>
+        </div>
+        
+        <div class="col-lg-6">
+            <h4 class="text-primary mb-3">For HR Professionals</h4>
+            <div class="d-flex mb-3">
+                <div class="flex-shrink-0">
+                    <span class="badge bg-primary rounded-pill">1</span>
+                </div>
+                <div class="flex-grow-1 ms-3">
+                    <h6>Create Job Postings</h6>
+                    <p class="text-muted">Post detailed job descriptions with required skills and experience.</p>
+                </div>
+            </div>
+            <div class="d-flex mb-3">
+                <div class="flex-shrink-0">
+                    <span class="badge bg-primary rounded-pill">2</span>
+                </div>
+                <div class="flex-grow-1 ms-3">
+                    <h6>AI-Powered Matching</h6>
+                    <p class="text-muted">Our AI analyzes applications and provides matching scores.</p>
+                </div>
+            </div>
+            <div class="d-flex mb-3">
+                <div class="flex-shrink-0">
+                    <span class="badge bg-primary rounded-pill">3</span>
+                </div>
+                <div class="flex-grow-1 ms-3">
+                    <h6>Generate Interview Questions</h6>
+                    <p class="text-muted">Get tailored interview questions and schedule interviews.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-6">
+            <h4 class="text-success mb-3">For Candidates</h4>
+            <div class="d-flex mb-3">
+                <div class="flex-shrink-0">
+                    <span class="badge bg-success rounded-pill">1</span>
+                </div>
+                <div class="flex-grow-1 ms-3">
+                    <h6>Create Profile</h6>
+                    <p class="text-muted">Build a comprehensive profile with skills and experience.</p>
+                </div>
+            </div>
+            <div class="d-flex mb-3">
+                <div class="flex-shrink-0">
+                    <span class="badge bg-success rounded-pill">2</span>
+                </div>
+                <div class="flex-grow-1 ms-3">
+                    <h6>Browse & Apply</h6>
+                    <p class="text-muted">Search for relevant jobs and submit applications.</p>
+                </div>
+            </div>
+            <div class="d-flex mb-3">
+                <div class="flex-shrink-0">
+                    <span class="badge bg-success rounded-pill">3</span>
+                </div>
+                <div class="flex-grow-1 ms-3">
+                    <h6>Track Progress</h6>
+                    <p class="text-muted">Monitor application status and receive interview notifications.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="row">
+        <div class="col-12 text-center">
+            <div class="card bg-light">
+                <div class="card-body py-5">
+                    <h3 class="mb-4">Ready to Transform Your Recruitment Process?</h3>
+                    <p class="lead mb-4">Join thousands of HR professionals and candidates using AI-powered recruitment.</p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="{% url 'login' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login
+                        </a>
+                        <a href="{% url 'hr_register' %}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-user-plus me-2"></i>Get Started
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .badge {
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
