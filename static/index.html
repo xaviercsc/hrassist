@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Assist AI - Smart Recruitment Platform</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-brain"></i>
+                <span>HR Assist AI</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#" class="nav-link" id="login-btn">Login</a>
+                <a href="#" class="nav-link" id="register-btn">Register</a>
+                <div class="user-menu" id="user-menu" style="display: none;">
+                    <span id="user-name"></span>
+                    <button id="logout-btn">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Landing Page -->
+        <section id="home" class="section active">
+            <div class="hero">
+                <div class="hero-content">
+                    <h1>AI-Powered HR Recruitment Platform</h1>
+                    <p>Streamline your hiring process with intelligent candidate matching and automated interview question generation.</p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary" id="hero-login">Get Started</button>
+                        <button class="btn btn-secondary" id="learn-more">Learn More</button>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <i class="fas fa-users-cog"></i>
+                </div>
+            </div>
+            
+            <div class="features">
+                <h2>Key Features</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-robot"></i>
+                        <h3>AI Candidate Matching</h3>
+                        <p>Automatically score and rank candidates based on job requirements using advanced AI algorithms.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-question-circle"></i>
+                        <h3>Interview Questions</h3>
+                        <p>Generate customized interview questions based on job requirements and candidate profiles.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-bell"></i>
+                        <h3>Real-time Notifications</h3>
+                        <p>Keep candidates informed about their application status and interview schedules.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-chart-bar"></i>
+                        <h3>Analytics Dashboard</h3>
+                        <p>Track recruitment metrics and make data-driven hiring decisions.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Login Form -->
+        <section id="login" class="section">
+            <div class="form-container">
+                <div class="form-card">
+                    <h2>Login</h2>
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label for="login-username">Username</label>
+                            <input type="text" id="login-username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Password</label>
+                            <input type="password" id="login-password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                    <p>Don't have an account? <a href="#" id="switch-to-register">Register here</a></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Register Form -->
+        <section id="register" class="section">
+            <div class="form-container">
+                <div class="form-card">
+                    <h2>Register</h2>
+                    <form id="register-form">
+                        <div class="form-group">
+                            <label for="reg-username">Username</label>
+                            <input type="text" id="reg-username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-email">Email</label>
+                            <input type="email" id="reg-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-fullname">Full Name</label>
+                            <input type="text" id="reg-fullname" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-usertype">User Type</label>
+                            <select id="reg-usertype" required>
+                                <option value="">Select User Type</option>
+                                <option value="hr">HR Manager</option>
+                                <option value="candidate">Candidate</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-password">Password</label>
+                            <input type="password" id="reg-password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Register</button>
+                    </form>
+                    <p>Already have an account? <a href="#" id="switch-to-login">Login here</a></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- HR Dashboard -->
+        <section id="hr-dashboard" class="section">
+            <div class="dashboard-container">
+                <div class="dashboard-header">
+                    <h2>HR Dashboard</h2>
+                    <button class="btn btn-primary" id="create-job-btn">Create New Job</button>
+                </div>
+                
+                <div class="dashboard-tabs">
+                    <button class="tab-btn active" data-tab="jobs">Job Postings</button>
+                    <button class="tab-btn" data-tab="applications">Applications</button>
+                    <button class="tab-btn" data-tab="notifications">Notifications</button>
+                </div>
+
+                <!-- Jobs Tab -->
+                <div id="jobs-tab" class="tab-content active">
+                    <div class="jobs-grid" id="jobs-grid">
+                        <!-- Jobs will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Applications Tab -->
+                <div id="applications-tab" class="tab-content">
+                    <div class="applications-list" id="applications-list">
+                        <!-- Applications will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Notifications Tab -->
+                <div id="notifications-tab" class="tab-content">
+                    <div class="notifications-list" id="notifications-list">
+                        <!-- Notifications will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Candidate Dashboard -->
+        <section id="candidate-dashboard" class="section">
+            <div class="dashboard-container">
+                <div class="dashboard-header">
+                    <h2>Available Jobs</h2>
+                    <button class="btn btn-secondary" id="view-profile-btn">My Profile</button>
+                </div>
+                
+                <div class="dashboard-tabs">
+                    <button class="tab-btn active" data-tab="available-jobs">Available Jobs</button>
+                    <button class="tab-btn" data-tab="my-applications">My Applications</button>
+                    <button class="tab-btn" data-tab="inbox">Inbox</button>
+                </div>
+
+                <!-- Available Jobs Tab -->
+                <div id="available-jobs-tab" class="tab-content active">
+                    <div class="jobs-grid" id="candidate-jobs-grid">
+                        <!-- Jobs will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- My Applications Tab -->
+                <div id="my-applications-tab" class="tab-content">
+                    <div class="applications-list" id="my-applications-list">
+                        <!-- My applications will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Inbox Tab -->
+                <div id="inbox-tab" class="tab-content">
+                    <div class="notifications-list" id="candidate-notifications-list">
+                        <!-- Notifications will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modals -->
+    <!-- Job Creation Modal -->
+    <div id="job-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="job-modal-title">Create New Job</h3>
+                <span class="close" id="close-job-modal">&times;</span>
+            </div>
+            <form id="job-form">
+                <div class="form-group">
+                    <label for="job-title">Job Title</label>
+                    <input type="text" id="job-title" required>
+                </div>
+                <div class="form-group">
+                    <label for="job-description">Job Description</label>
+                    <textarea id="job-description" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="job-experience">Years of Experience Required</label>
+                    <input type="number" id="job-experience" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="job-relevant-exp">Relevant Experience Details</label>
+                    <textarea id="job-relevant-exp" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="job-skills">Key Skills Required</label>
+                    <textarea id="job-skills" rows="3" placeholder="e.g., Python, JavaScript, Project Management" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="job-location">Work Location</label>
+                    <input type="text" id="job-location" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancel-job">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="save-job">Save Job</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Application Modal -->
+    <div id="application-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Apply for Job</h3>
+                <span class="close" id="close-application-modal">&times;</span>
+            </div>
+            <form id="application-form" enctype="multipart/form-data">
+                <input type="hidden" id="application-job-id">
+                <div class="form-group">
+                    <label for="app-photo">Photo</label>
+                    <input type="file" id="app-photo" accept="image/*" required>
+                </div>
+                <div class="form-group">
+                    <label for="app-name">Full Name</label>
+                    <input type="text" id="app-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="app-email">Email</label>
+                    <input type="email" id="app-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="app-phone">Phone</label>
+                    <input type="tel" id="app-phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="app-address">Address</label>
+                    <textarea id="app-address" rows="2" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="app-experience">Total Years of Experience</label>
+                    <input type="number" id="app-experience" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="app-relevant-exp">Relevant Experience for this Job</label>
+                    <textarea id="app-relevant-exp" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="app-skills">Primary Skills</label>
+                    <textarea id="app-skills" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="app-education">Educational Background</label>
+                    <textarea id="app-education" rows="3" placeholder="Institution, Year of Passing, etc." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="app-projects">Current/Past Projects</label>
+                    <textarea id="app-projects" rows="3" placeholder="Project details, technologies used, duration" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="app-preferred-location">Preferred Work Location</label>
+                    <input type="text" id="app-preferred-location" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancel-application">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit Application</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

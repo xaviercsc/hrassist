@@ -18,6 +18,10 @@ from reportlab.lib.pagesizes import letter
 import io
 import base64
 from PIL import Image
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 from database import get_db, engine
 from models import Base, User, Job, Application, Notification
@@ -32,15 +36,21 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(title="HR Assist AI", description="AI-powered HR recruitment platform")
 
 # Security setup
-SECRET_KEY = "your-secret-key-change-in-production"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-in-production")
+ALGORITHM = os.getenv("ALGORITHM", "HS256")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30))
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 security = HTTPBearer()
 
-# OpenAI setup (add your API key in environment variable)
-openai.api_key = os.getenv("OPENAI_API_KEY", "your-openai-api-key")
+# Azure OpenAI setup
+openai.api_type = "azure"
+openai.api_base = "https://openai-poc2-agcs.openai.azure.com"
+openai.api_version = "2025-01-01-preview"
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+# Azure OpenAI deployment name
+AZURE_DEPLOYMENT_NAME = "gpt-4o-mini-xmj"
 
 # CORS middleware
 app.add_middleware(
@@ -202,8 +212,13 @@ def create_job(job: JobCreate, current_user: User = Depends(get_current_user), d
     return db_job
 
 @app.get("/api/jobs", response_model=List[JobResponse])
-def get_jobs(db: Session = Depends(get_db)):
-    jobs = db.query(Job).filter(Job.is_active == True).all()
+def get_jobs(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    if current_user.user_type == "hr":
+        # HR users only see jobs they created
+        jobs = db.query(Job).filter(Job.is_active == True, Job.created_by == current_user.id).all()
+    else:
+        # Candidates see all active jobs
+        jobs = db.query(Job).filter(Job.is_active == True).all()
     return jobs
 
 @app.get("/api/jobs/{job_id}")
@@ -310,6 +325,11 @@ async def create_application(
 def get_job_applications(job_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     if current_user.user_type != "hr":
         raise HTTPException(status_code=403, detail="Only HR can view applications")
+    
+    # Check if the job belongs to the current HR user
+    job = db.query(Job).filter(Job.id == job_id, Job.created_by == current_user.id).first()
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found or you don't have permission to view its applications")
     
     applications = db.query(Application).filter(Application.job_id == job_id).all()
     return applications
@@ -453,15 +473,17 @@ def calculate_ai_score(job, candidate_data):
         """
         
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            engine=AZURE_DEPLOYMENT_NAME,  # Use engine instead of model for Azure
             messages=[{"role": "user", "content": prompt}],
-            max_tokens=10
+            max_tokens=10,
+            temperature=0.3
         )
         
         score = float(response.choices[0].message.content.strip())
         return min(max(score, 1), 10)  # Ensure score is between 1-10
         
     except Exception as e:
+        print(f"OpenAI API Error: {e}")
         # Fallback scoring logic
         return calculate_fallback_score(job, candidate_data)
 
@@ -513,15 +535,17 @@ def generate_interview_questions(job, application):
         """
         
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            engine=AZURE_DEPLOYMENT_NAME,  # Use engine instead of model for Azure
             messages=[{"role": "user", "content": prompt}],
-            max_tokens=500
+            max_tokens=500,
+            temperature=0.7
         )
         
         questions = response.choices[0].message.content.strip().split('\n')
         return [q.strip() for q in questions if q.strip()]
         
     except Exception as e:
+        print(f"OpenAI API Error: {e}")
         # Fallback questions
         return [
             "Tell me about yourself and your relevant experience.",
