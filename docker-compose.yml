@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  hr-assist-app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./hr_assist.db
+      - SECRET_KEY=your-super-secret-key-change-in-production
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    volumes:
+      - ./uploads:/app/uploads
+      - ./hr_assist.db:/app/hr_assist.db
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - hr-assist-app
+    restart: unless-stopped
