@@ -319,9 +319,248 @@ The application can be deployed on:
 
 This project is licensed under the MIT License.
 
-## Support
 
-For support and questions:
-- Create an issue in the repository
-- Check the API documentation at `/docs`
-- Review the troubleshooting section above
+1. Testing in Python Virtual Environment
+Prerequisites Setup
+
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+# Windows:
+venv\Scripts\activate
+# macOS/Linux:
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Create uploads directory
+mkdir uploads
+
+# Set environment variables (update .env file with your values)
+# Add your OpenAI API key to .env file:
+OPENAI_API_KEY=your-actual-openai-api-key-here
+
+Run the Development Server
+
+# Start the FastAPI server
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+
+# Or run with Python directly
+python main.py
+
+Access the Application
+Main App: http://localhost:8000
+API Documentation: http://localhost:8000/docs
+Alternative API Docs: http://localhost:8000/redoc
+2. Docker Build and Deployment
+Build Docker Image
+
+# Build the Docker image
+docker build -t hr-assist-ai .
+
+# Run single container
+docker run -p 8000:8000 -e OPENAI_API_KEY=your-api-key hr-assist-ai
+
+Docker Compose Deployment (Recommended)
+
+# Set your OpenAI API key in environment
+export OPENAI_API_KEY=your-actual-openai-api-key
+
+# Build and start all services
+docker-compose up --build
+
+# Run in background
+docker-compose up -d --build
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+
+SSL Setup for Production (Optional)
+# Create SSL directory
+mkdir ssl
+
+# Generate self-signed certificates (for testing)
+openssl req -x509 -newkey rsa:4096 -keyout ssl/key.pem -out ssl/cert.pem -days 365 -nodes
+
+# Or use Let's Encrypt for production
+# certbot certonly --standalone -d yourdomain.com
+
+3. Testing the Application
+Test User Registration and Login
+Register HR User:
+
+Go to Register page
+Create account with user type "HR Manager"
+Login with credentials
+Register Candidate User:
+
+Open incognito/private window
+Register with user type "Candidate"
+Login with credentials
+Test HR Functionality
+Create Job Postings:
+
+Login as HR user
+Click "Create New Job"
+Fill job details and save
+Verify job appears in listings
+Manage Jobs:
+
+Edit job postings
+View job applications
+Delete jobs
+Test Candidate Functionality
+Browse Jobs:
+
+Login as candidate
+View available jobs
+Check job details
+Apply for Jobs:
+
+Click "Apply Now"
+Fill application form
+Upload photo
+Submit application
+Check AI score
+Test AI Features
+Candidate Scoring:
+
+Submit applications with different skill sets
+Verify AI scoring (1-10 scale)
+Check scoring logic
+Interview Questions:
+
+Shortlist candidates (score ≥ 5)
+Download interview questions PDF
+Verify personalized questions
+4. Separate Server Deployment
+Cloud Deployment Options
+AWS Deployment
+
+# Using AWS EC2
+1. Launch EC2 instance (Ubuntu 20.04+)
+2. Install Docker and Docker Compose
+3. Clone/upload your application
+4. Set environment variables
+5. Run: docker-compose up -d --build
+6. Configure security groups (ports 80, 443)
+
+DigitalOcean Deployment
+# Using DigitalOcean Droplet
+1. Create droplet with Docker pre-installed
+2. Upload application files
+3. Set environment variables
+4. Run: docker-compose up -d --build
+5. Configure firewall rules
+Google Cloud Platform
+# Using Google Cloud Run
+1. Build image: docker build -t gcr.io/PROJECT-ID/hr-assist-ai .
+2. Push image: docker push gcr.io/PROJECT-ID/hr-assist-ai
+3. Deploy: gcloud run deploy --image gcr.io/PROJECT-ID/hr-assist-ai
+
+Production Configuration
+Environment Variables for Production
+
+# Update .env file for production
+DATABASE_URL=sqlite:///./hr_assist.db
+SECRET_KEY=generate-strong-secret-key-here
+OPENAI_API_KEY=your-production-openai-key
+DEBUG=False
+HOST=0.0.0.0
+PORT=8000
+
+
+Nginx Configuration (if not using Docker Compose)
+
+# Install Nginx
+sudo apt update && sudo apt install nginx
+
+# Copy nginx.conf to /etc/nginx/sites-available/hr-assist
+sudo ln -s /etc/nginx/sites-available/hr-assist /etc/nginx/sites-enabled/
+
+# Test and reload
+sudo nginx -t
+sudo systemctl reload nginx
+
+
+5. Testing Checklist
+Basic Functionality
+<input disabled="" type="checkbox"> Home page loads correctly
+<input disabled="" type="checkbox"> User registration works (HR and Candidate)
+<input disabled="" type="checkbox"> User login/logout works
+<input disabled="" type="checkbox"> Navigation between sections works
+<input disabled="" type="checkbox"> Responsive design on mobile
+HR Features
+<input disabled="" type="checkbox"> Create job postings
+<input disabled="" type="checkbox"> Edit job postings
+<input disabled="" type="checkbox"> Delete job postings
+<input disabled="" type="checkbox"> View job applications
+<input disabled="" type="checkbox"> Shortlist candidates
+<input disabled="" type="checkbox"> Download interview questions PDF
+<input disabled="" type="checkbox"> View notifications
+Candidate Features
+<input disabled="" type="checkbox"> Browse available jobs
+<input disabled="" type="checkbox"> View job details
+<input disabled="" type="checkbox"> Submit job applications
+<input disabled="" type="checkbox"> Upload profile photos
+<input disabled="" type="checkbox"> Receive AI scoring
+<input disabled="" type="checkbox"> View application status
+<input disabled="" type="checkbox"> Receive notifications
+AI Integration
+<input disabled="" type="checkbox"> Candidate scoring works (with/without OpenAI)
+<input disabled="" type="checkbox"> Interview questions generated
+<input disabled="" type="checkbox"> PDF generation works
+<input disabled="" type="checkbox"> Fallback systems work when OpenAI unavailable
+Security & Performance
+<input disabled="" type="checkbox"> JWT authentication works
+<input disabled="" type="checkbox"> File uploads are secure
+<input disabled="" type="checkbox"> Database operations work
+<input disabled="" type="checkbox"> Error handling works
+<input disabled="" type="checkbox"> CORS configured properly
+6. Troubleshooting Common Issues
+Database Issues
+# Reset database
+rm hr_assist.db
+python -c "from database import engine; from models import Base; Base.metadata.create_all(bind=engine)"
+
+
+Docker Issues
+# Clean Docker cache
+docker system prune -a
+
+# Rebuild without cache
+docker-compose build --no-cache
+
+
+Port Conflicts
+# Check what's using port 8000
+netstat -ano | findstr :8000  # Windows
+lsof -i :8000                 # macOS/Linux
+
+# Use different port
+uvicorn main:app --port 8080
+
+7. Performance Optimization
+For Production
+# Use multiple workers
+uvicorn main:app --workers 4 --host 0.0.0.0 --port 8000
+
+# Use Gunicorn for production
+pip install gunicorn
+gunicorn main:app -w 4 -k uvicorn.workers.UvicornWorker
+
+Initialize the database:
+python -c "from database import engine; from models import Base; Base.metadata.create_all(bind=engine)"
+
+Start the FastAPI server:
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+
+Access the application:
+Main app: http://localhost:8000
+API documentation: http://localhost:8000/docs
+The application should now run successfully with all dependencies properly installed.
