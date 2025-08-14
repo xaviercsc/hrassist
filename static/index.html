@@ -8,7 +8,142 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Navigation -->
+        </div>
+
+    <!-- Interview Result Modal -->
+    <div id="interview-result-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Update Interview Result</h3>
+                <span class="close" id="close-interview-result-modal">&times;</span>
+            </div>
+            <form id="interview-result-form">
+                <input type="hidden" id="interview-result-id">
+                <div class="form-group">
+                    <label for="interview-result">Interview Result</label>
+                    <select id="interview-result" required>
+                        <option value="">Select Result</option>
+                        <option value="passed">Passed</option>
+                        <option value="failed">Failed</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="interview-feedback">Feedback (Optional)</label>
+                    <textarea id="interview-feedback" rows="4" placeholder="Provide feedback about the candidate's performance"></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancel-interview-result">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Result</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Candidate Selection Modal -->
+    <div id="candidate-selection-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Select Candidate</h3>
+                <span class="close" id="close-candidate-selection-modal">&times;</span>
+            </div>
+            <form id="candidate-selection-form">
+                <input type="hidden" id="selection-application-id">
+                <div class="form-group">
+                    <label for="salary-offered">Salary Offered (Optional)</label>
+                    <input type="text" id="salary-offered" placeholder="e.g., $65,000 annually">
+                </div>
+                <div class="form-group">
+                    <label for="start-date">Proposed Start Date (Optional)</label>
+                    <input type="date" id="start-date">
+                </div>
+                <div class="form-group">
+                    <label for="willingness-deadline-days">Willingness Confirmation Deadline</label>
+                    <select id="willingness-deadline-days" required>
+                        <option value="3">3 days</option>
+                        <option value="5">5 days</option>
+                        <option value="7" selected>7 days</option>
+                        <option value="10">10 days</option>
+                        <option value="14">14 days</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="selection-notes">Additional Notes (Optional)</label>
+                    <textarea id="selection-notes" rows="3" placeholder="Any additional information for the candidate"></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancel-candidate-selection">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Send Job Offer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Willingness Confirmation Modal -->
+    <div id="willingness-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Job Offer Response</h3>
+                <span class="close" id="close-willingness-modal">&times;</span>
+            </div>
+            <form id="willingness-form">
+                <input type="hidden" id="willingness-application-id">
+                <div class="form-group">
+                    <p id="willingness-job-details"></p>
+                </div>
+                <div class="form-group">
+                    <label>Do you accept this job offer?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="willingness" value="true" required> Yes, I accept</label>
+                        <label><input type="radio" name="willingness" value="false" required> No, I decline</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="willingness-notes">Response Notes (Optional)</label>
+                    <textarea id="willingness-notes" rows="3" placeholder="Any additional comments or feedback"></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancel-willingness">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit Response</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Job Closure Modal -->
+    <div id="job-closure-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Close Job Position</h3>
+                <span class="close" id="close-job-closure-modal">&times;</span>
+            </div>
+            <form id="job-closure-form">
+                <input type="hidden" id="closure-job-id">
+                <div class="form-group">
+                    <p id="closure-job-details"></p>
+                </div>
+                <div class="form-group">
+                    <label for="closure-reason">Reason for Closing</label>
+                    <select id="closure-reason" required>
+                        <option value="">Select Reason</option>
+                        <option value="Position filled">Position filled</option>
+                        <option value="Budget constraints">Budget constraints</option>
+                        <option value="Requirements changed">Requirements changed</option>
+                        <option value="Postponed indefinitely">Postponed indefinitely</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancel-job-closure">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Close Position</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" class="loading-spinner">
+        <div class="spinner"></div>
+    </div>avigation -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
@@ -118,6 +253,11 @@
                                 <option value="hr">HR Manager</option>
                                 <option value="candidate">Candidate</option>
                             </select>
+                        </div>
+                        <div class="form-group" id="admin-code-group" style="display: none;">
+                            <label for="reg-admin-code">Admin Secret Code (Required for HR)</label>
+                            <input type="password" id="reg-admin-code" placeholder="Enter admin secret code">
+                            <small>Contact administrator for the secret code</small>
                         </div>
                         <div class="form-group">
                             <label for="reg-password">Password</label>
@@ -238,6 +378,29 @@
                     <label for="job-location">Work Location</label>
                     <input type="text" id="job-location" required>
                 </div>
+                <div class="form-group">
+                    <label for="job-salary">Salary Range (Optional)</label>
+                    <input type="text" id="job-salary" placeholder="e.g., $50,000 - $70,000">
+                </div>
+                <div class="form-group">
+                    <label for="job-type">Employment Type</label>
+                    <select id="job-type" required>
+                        <option value="">Select Type</option>
+                        <option value="full-time">Full-time</option>
+                        <option value="part-time">Part-time</option>
+                        <option value="contract">Contract</option>
+                        <option value="temporary">Temporary</option>
+                        <option value="internship">Internship</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="job-vacancies">Number of Vacancies</label>
+                    <input type="number" id="job-vacancies" min="1" value="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="job-deadline">Application Deadline (Optional)</label>
+                    <input type="date" id="job-deadline" min="">
+                </div>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-secondary" id="cancel-job">Cancel</button>
                     <button type="submit" class="btn btn-primary" id="save-job">Save Job</button>
@@ -302,6 +465,66 @@
                 <div class="modal-actions">
                     <button type="button" class="btn btn-secondary" id="cancel-application">Cancel</button>
                     <button type="submit" class="btn btn-primary">Submit Application</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Interview Scheduling Modal -->
+    <div id="interview-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Schedule Interview</h3>
+                <span class="close" id="close-interview-modal">&times;</span>
+            </div>
+            <form id="interview-form">
+                <input type="hidden" id="interview-application-id">
+                <div class="form-group">
+                    <label for="interview-date">Interview Date</label>
+                    <input type="date" id="interview-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="interview-time">Interview Time</label>
+                    <input type="time" id="interview-time" required>
+                </div>
+                <div class="form-group">
+                    <label for="interview-timezone">Time Zone</label>
+                    <select id="interview-timezone" required>
+                        <option value="">Select Time Zone</option>
+                        <option value="EST">Eastern Standard Time (EST)</option>
+                        <option value="CST">Central Standard Time (CST)</option>
+                        <option value="MST">Mountain Standard Time (MST)</option>
+                        <option value="PST">Pacific Standard Time (PST)</option>
+                        <option value="IST">India Standard Time (IST)</option>
+                        <option value="GMT">Greenwich Mean Time (GMT)</option>
+                        <option value="CET">Central European Time (CET)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="interview-platform">Meeting Platform</label>
+                    <select id="interview-platform" required>
+                        <option value="">Select Platform</option>
+                        <option value="webex">Cisco Webex</option>
+                        <option value="teams">Microsoft Teams</option>
+                        <option value="zoom">Zoom</option>
+                        <option value="google-meet">Google Meet</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="interview-link">Meeting Link</label>
+                    <input type="url" id="interview-link" placeholder="https://..." required>
+                </div>
+                <div class="form-group">
+                    <label for="interview-password">Meeting Password (Optional)</label>
+                    <input type="text" id="interview-password" placeholder="Meeting password if required">
+                </div>
+                <div class="form-group">
+                    <label for="interview-notes">Additional Notes</label>
+                    <textarea id="interview-notes" rows="3" placeholder="Any additional instructions or notes for the candidate"></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancel-interview">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Schedule Interview</button>
                 </div>
             </form>
         </div>

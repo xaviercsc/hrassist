@@ -11,6 +11,7 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str
+    admin_code: Optional[str] = None
 
 class UserLogin(BaseModel):
     username: str
@@ -32,6 +33,10 @@ class JobBase(BaseModel):
     relevant_experience: Optional[str] = None
     skills: str
     work_location: str
+    salary_range: Optional[str] = None
+    employment_type: str
+    number_of_vacancies: Optional[int] = 1
+    application_deadline: Optional[datetime] = None
 
 class JobCreate(JobBase):
     pass
@@ -43,7 +48,12 @@ class JobUpdate(BaseModel):
     relevant_experience: Optional[str] = None
     skills: Optional[str] = None
     work_location: Optional[str] = None
+    salary_range: Optional[str] = None
+    employment_type: Optional[str] = None
     is_active: Optional[bool] = None
+    number_of_vacancies: Optional[int] = None
+    application_deadline: Optional[datetime] = None
+    is_closed: Optional[bool] = None
 
 class JobResponse(JobBase):
     id: int
@@ -95,6 +105,8 @@ class NotificationCreate(NotificationBase):
     interview_date: Optional[datetime] = None
     interview_time: Optional[str] = None
     webex_link: Optional[str] = None
+    meeting_password: Optional[str] = None
+    interview_duration: Optional[int] = None
 
 class NotificationResponse(NotificationBase):
     id: int
@@ -104,6 +116,37 @@ class NotificationResponse(NotificationBase):
     interview_date: Optional[datetime] = None
     interview_time: Optional[str] = None
     webex_link: Optional[str] = None
+    meeting_password: Optional[str] = None
+    interview_duration: Optional[int] = None
+    
+    class Config:
+        from_attributes = True
+
+# Interview scheduling schemas
+class InterviewSchedule(BaseModel):
+    interview_date: str
+    interview_time: str
+    duration_minutes: Optional[int] = 60
+    timezone: str
+    platform: str
+    meeting_link: str
+    meeting_password: Optional[str] = None
+    notes: Optional[str] = None
+    interview_type: Optional[str] = "technical"  # 'technical' or 'hr'
+
+class InterviewResponse(BaseModel):
+    id: int
+    application_id: int
+    interview_type: str
+    interview_date: datetime
+    interview_time: str
+    duration_minutes: int
+    timezone: str
+    platform: str
+    meeting_link: str
+    meeting_password: Optional[str] = None
+    notes: Optional[str] = None
+    created_at: datetime
     
     class Config:
         from_attributes = True
